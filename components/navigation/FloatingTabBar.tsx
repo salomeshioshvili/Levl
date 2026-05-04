@@ -1,5 +1,5 @@
 import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Platform, Pressable, StyleSheet, Text, View, type ViewStyle } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { COLORS, TAB_BAR_FLOAT_HEIGHT } from "../../constants/theme";
@@ -8,18 +8,42 @@ export function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarP
   const insets = useSafeAreaInsets();
   const bottom = Math.max(insets.bottom, 12);
 
+  /** Web: `absolute` sits under the scene; `fixed` + z-index keeps the bar above RN web layers (esp. mobile Safari). */
+  const webDock: ViewStyle | null =
+    Platform.OS === "web"
+      ? ({
+          position: "fixed",
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 99999,
+          elevation: 99999,
+        } as unknown as ViewStyle)
+      : null;
+
+  const nativeDock =
+    Platform.OS !== "web"
+      ? ({
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+        } as const)
+      : null;
+
   return (
     <View
       style={[
-        styles.wrap,
+        styles.wrapBase,
+        nativeDock,
+        webDock,
         {
           paddingBottom: bottom,
-          bottom: 0,
         },
       ]}
       pointerEvents="box-none"
     >
-      <View style={styles.bar}>
+      <View style={styles.bar} pointerEvents="auto">
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
           const label =
@@ -68,10 +92,7 @@ export function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarP
 }
 
 const styles = StyleSheet.create({
-  wrap: {
-    position: "absolute",
-    left: 0,
-    right: 0,
+  wrapBase: {
     alignItems: "center",
   },
   bar: {
@@ -92,6 +113,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 16,
     elevation: 10,
+    zIndex: 1,
   },
   tab: {
     flex: 1,

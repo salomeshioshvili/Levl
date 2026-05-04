@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
+import { Platform } from "react-native";
 
 import { FloatingTabBar } from "../../components/navigation/FloatingTabBar";
 import { COLORS } from "../../constants/theme";
@@ -10,6 +11,19 @@ export default function TabsLayout() {
       tabBar={(props) => <FloatingTabBar {...props} />}
       screenOptions={{
         headerShown: false,
+        tabBarStyle:
+          Platform.OS === "web"
+            ? {
+                position: "absolute",
+                left: 0,
+                right: 0,
+                bottom: 0,
+                zIndex: 99998,
+                elevation: 99998,
+                backgroundColor: "transparent",
+                borderTopWidth: 0,
+              }
+            : undefined,
         tabBarActiveTintColor: COLORS.accent,
         tabBarInactiveTintColor: COLORS.muted,
         tabBarShowLabel: true,

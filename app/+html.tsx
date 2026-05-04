@@ -16,8 +16,9 @@ export default function HtmlRoot({ children }: PropsWithChildren) {
         <style
           dangerouslySetInnerHTML={{
             __html: `
-              html, body { background-color: #09090b !important; }
-              #root { background-color: #09090b !important; }
+              html, body { background-color: #09090b !important; overflow-x: hidden; }
+              /* Avoid clipping position:fixed tab bar inside RN web (mobile Safari). */
+              #root { background-color: #09090b !important; overflow: visible !important; }
             `,
           }}
         />
