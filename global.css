@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Expo web: default document background is white before RN mounts */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background-color: #09090b;
+}
+
+body > div,
+#root {
+  min-height: 100%;
+  background-color: #09090b;
+}
